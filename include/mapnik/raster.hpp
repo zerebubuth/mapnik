@@ -26,6 +26,7 @@
 // mapnik
 #include <mapnik/box2d.hpp>
 #include <mapnik/image_data.hpp>
+#include <mapnik/graphics.hpp>
 #include <mapnik/noncopyable.hpp>
 
 namespace mapnik {
@@ -39,6 +40,12 @@ public:
         : ext_(ext),
           data_(width,height),
           premultiplied_alpha_(premultiplied_alpha)
+    {}
+
+    raster(boost::shared_ptr<image_32> im, box2d<double> const& ext)
+        : ext_(ext),
+          data_(im->width(),im->height(),im->data().getData()),
+          premultiplied_alpha_(im->premultiplied())
     {}
 };
 }

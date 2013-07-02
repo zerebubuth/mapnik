@@ -8,6 +8,7 @@ For a complete change history, see the git log.
 
 ## Future
 
+- Added the ability in C++ to create mapnik::image_32, mapnik::image_data_32, and mapnik::raster instances that use external pixel data rather than internal allocation.
 - Added `premultiplied` property on mapnik::image_32 / mapnik.Image to enable knowledge of premultiplied status of image buffer.
 
 ## 2.2.0

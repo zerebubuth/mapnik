@@ -39,9 +39,10 @@ template <class T> class ImageData
 public:
     typedef T pixel_type;
 
-    ImageData(int width,int height)
+    ImageData(int width, int height)
         : width_(static_cast<unsigned>(width)),
-          height_(static_cast<unsigned>(height))
+          height_(static_cast<unsigned>(height)),
+          external_data_(false)
     {
         if (width < 0)
         {
@@ -55,9 +56,26 @@ public:
         if (pData_) std::memset(pData_,0,sizeof(T)*width_*height_);
     }
 
-    ImageData(const ImageData<T>& rhs)
+    ImageData(int width, int height, T * data)
+        : width_(static_cast<unsigned>(width)),
+          height_(static_cast<unsigned>(height)),
+          external_data_(true),
+          pData_(data)
+    {
+        if (width < 0)
+        {
+            throw std::runtime_error("negative width not allowed for image_data");
+        }
+        if (height < 0)
+        {
+            throw std::runtime_error("negative height not allowed for image_data");
+        }
+    }
+
+    ImageData(ImageData<T> const& rhs)
         :width_(rhs.width_),
          height_(rhs.height_),
+         external_data_(false),
          pData_((rhs.width_!=0 && rhs.height_!=0)?
                 static_cast<T*>(::operator new(sizeof(T)*rhs.width_*rhs.height_)) :0)
     {
@@ -136,14 +154,18 @@ public:
 
     inline ~ImageData()
     {
-        ::operator delete(pData_),pData_=0;
+        if (!external_data_)
+        {
+            ::operator delete(pData_),pData_=0;
+        }
     }
 
 private:
     const unsigned width_;
     const unsigned height_;
+    bool external_data_;
     T *pData_;
-    ImageData& operator=(const ImageData&);
+    ImageData& operator=(ImageData const&);
 };
 
 typedef ImageData<unsigned> image_data_32;

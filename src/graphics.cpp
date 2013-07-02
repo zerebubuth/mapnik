@@ -41,14 +41,21 @@
 
 namespace mapnik
 {
-image_32::image_32(int width,int height)
+image_32::image_32(int width, int height)
     :width_(width),
      height_(height),
      data_(width,height),
      painted_(false),
      premultiplied_(false) {}
 
-image_32::image_32(const image_32& rhs)
+image_32::image_32(int width, int height, image_data_32::pixel_type * data)
+    :width_(width),
+     height_(height),
+     data_(width,height,data),
+     painted_(false),
+     premultiplied_(false) {}
+
+image_32::image_32(image_32 const& rhs)
     :width_(rhs.width_),
      height_(rhs.height_),
      data_(rhs.data_),
