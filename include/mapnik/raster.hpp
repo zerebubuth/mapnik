@@ -29,6 +29,9 @@
 #include <mapnik/graphics.hpp>
 #include <mapnik/noncopyable.hpp>
 
+// boost
+#include <boost/shared_ptr.hpp>
+
 namespace mapnik {
 class raster : private mapnik::noncopyable
 {
