@@ -9,6 +9,7 @@
 #include <mapnik/util/fs.hpp>
 #include <vector>
 #include <algorithm>
+#include <boost/make_shared.hpp>
 
 #include "utils.hpp"
 
