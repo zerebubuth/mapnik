@@ -85,15 +85,14 @@ files = {
     'lines-1': {'sizes': sizes_few_square,'bbox':default_text_box},
     'lines-2': {'sizes': sizes_few_square,'bbox':default_text_box},
     'lines-3': {'sizes': sizes_few_square,'bbox':default_text_box},
-    # https://github.com/mapnik/mapnik/issues/1696
-    # https://github.com/mapnik/mapnik/issues/1521
-    # fails with clang++ on os x
     'lines-shield': {'sizes': sizes_few_square,'bbox':default_text_box},
     'collision': {'sizes':[(600,400)]},
     'shield-on-polygon': {'sizes':[(600,400)]},
     'shield-on-line-spacing-eq-width': {'sizes':[(600,400)]},
     'geometry-transform-translate': {'sizes':[(200,200)]},
     'marker-svg-opacity':{},
+    'marker-svg-opacity2':{},
+    'marker-svg-empty-g-element':{},
     'marker-multi-policy': {'sizes':[(600,400)]},
     'marker-on-line': {'sizes':[(600,400)],
         'bbox': mapnik.Box2d(-10, 0, 15, 20)},
@@ -103,7 +102,7 @@ files = {
     'marker-on-line-spacing-eq-width-overlap': {'sizes':[(600,400)]},
     'marker_line_placement_on_points':{},
     'marker-with-background-image': {'sizes':[(600,400),(400,600),(257,256)]},
-    #'marker-with-background-image-and-hsla-transform': {'sizes':[(600,400),(400,600),(257,256)]},
+    'marker-with-background-image-and-hsla-transform': {'sizes':[(600,400),(400,600),(257,256)]},
     'marker-on-hex-grid': {'sizes':[(600,400),(400,600),(257,256)]},
     'whole-centroid': {'sizes':[(600,400)],
         'bbox': mapnik.Box2d(736908, 4390316, 2060771, 5942346)},
@@ -141,13 +140,22 @@ files = {
         'bbox':mapnik.Box2d(-13267022.12540147,4598451.621636203,-13247454.246160466,4618019.500877209)
     },
     'tiff-reprojection-1': {'sizes':[(250,250)]},
-    'tiff-reprojection-2': {'sizes':[(250,250)]},
+
+    # disabled since fixing is not actionable: https://github.com/mapnik/mapnik/issues/1913
+    #'tiff-reprojection-2': {'sizes':[(250,250)]},
+
     # https://github.com/mapnik/mapnik/issues/1520
     # commented because these are not critical failures
     #'tiff-alpha-raster': {'sizes':[(600,400)]},
     #'tiff-alpha-broken-assoc-alpha-raster': {'sizes':[(600,400)]},
     #'tiff-nodata-edge-raster': {'sizes':[(600,400)]},
     #'tiff-opaque-edge-raster': {'sizes':[(256,256)]},
+    'road-casings-grouped-rendering': {'sizes':[(600,600)],
+        'bbox':mapnik.Box2d(1477001.12245,6890242.37746,1480004.49012,6892244.62256)
+    },
+    'road-casings-non-grouped-rendering': {'sizes':[(600,600)],
+        'bbox':mapnik.Box2d(1477001.12245,6890242.37746,1480004.49012,6892244.62256)
+    }
     }
 
 class Reporting:
