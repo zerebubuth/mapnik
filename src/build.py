@@ -143,6 +143,7 @@ else: # unix, non-macos
 
 source = Split(
     """
+    blur.cpp
     fs.cpp
     debug_symbolizer.cpp
     request.cpp

@@ -27,6 +27,7 @@
 //mapnik
 #include <mapnik/image_filter_types.hpp>
 #include <mapnik/util/hsl.hpp>
+#include <mapnik/blur.hpp>
 
 // boost
 #include <boost/variant/static_visitor.hpp>
@@ -40,7 +41,6 @@
 #include "agg_color_rgba.h"
 #include "agg_pixfmt_rgba.h"
 #include "agg_scanline_u.h"
-#include "agg_blur.h"
 #include "agg_gradient_lut.h"
 // stl
 #include <cmath>
@@ -402,8 +402,7 @@ template <typename Src>
 void apply_filter(Src & src, agg_stack_blur const& op)
 {
     agg::rendering_buffer buf(src.raw_data(),src.width(),src.height(), src.width() * 4);
-    agg::pixfmt_rgba32_pre pixf(buf);
-    agg::stack_blur_rgba32(pixf,op.rx,op.ry);
+    agg_blur::blur(buf,op.rx,op.ry);
 }
 
 inline double channel_delta(double source, double match)
