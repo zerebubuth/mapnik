@@ -399,10 +399,10 @@ void apply_filter(Src & src, Filter const& filter)
 }
 
 template <typename Src>
-void apply_filter(Src & src, agg_stack_blur const& op)
+void apply_filter(Src & src, agg_stack_blur const& op, unsigned offset_x, unsigned offset_y)
 {
     agg::rendering_buffer buf(src.raw_data(),src.width(),src.height(), src.width() * 4);
-    agg_blur::blur(buf,op.rx,op.ry);
+    agg_blur::blur(buf,op.rx,op.ry,offset_x,offset_y);
 }
 
 inline double channel_delta(double source, double match)
@@ -762,8 +762,10 @@ void apply_filter(Src & src, invert const& /*op*/)
 template <typename Src>
 struct filter_visitor : boost::static_visitor<void>
 {
-    filter_visitor(Src & src)
-    : src_(src) {}
+    filter_visitor(Src & src,unsigned offset_x=0,unsigned offset_y=0)
+    : src_(src),
+      offset_x_(offset_x),
+      offset_y_(offset_y) {}
 
     template <typename T>
     void operator () (T const& filter)
@@ -771,7 +773,14 @@ struct filter_visitor : boost::static_visitor<void>
         apply_filter(src_, filter);
     }
 
+    void operator () (agg_stack_blur const& filter)
+    {
+        apply_filter(src_, filter, offset_x_, offset_y_);
+    }
+
     Src & src_;
+    unsigned offset_x_;
+    unsigned offset_y_;
 };
 
 struct filter_radius_visitor : boost::static_visitor<void>

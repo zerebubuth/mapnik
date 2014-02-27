@@ -299,21 +299,10 @@ namespace agg
 
 namespace agg_blur {
 
-    void blur(agg::rendering_buffer & buf, unsigned rx, unsigned ry)
+    void blur(agg::rendering_buffer & buf, unsigned rx, unsigned ry, unsigned offset_x, unsigned offset_y)
     {
         agg::pixfmt_rgba32_pre pixf(buf);
-        unsigned offset_x = rx;
-        unsigned offset_y = ry;
         agg::_stack_blur_rgba32(pixf,rx,ry,offset_x,offset_y);
-        /*
-        agg::rendering_buffer buf2;
-        agg::pixfmt_rgba32_pre pixf2(buf2);
-        pixf2.attach(pixf,-rx,-ry,pixf.width()-rx,pixf.height()-ry);
-       // agg::recursive_blur<agg::rgba8, agg::recursive_blur_calc_rgba<> > m_recursive_blur;
-       // m_recursive_blur.blur(pixf2,rx);
-        agg::stack_blur_rgba32(pixf2,rx,ry);
-//        std::clog << "pixf.width() " << pixf.width() << " pixf2.width() " << pixf2.width() << "\n";
-*/
     }
 
 }

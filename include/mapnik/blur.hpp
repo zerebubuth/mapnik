@@ -3,7 +3,7 @@
 
 namespace agg_blur {
 
-    void blur(agg::rendering_buffer & buf, unsigned rx, unsigned ry);
+    void blur(agg::rendering_buffer & buf, unsigned rx, unsigned ry, unsigned offset_x, unsigned offset_y);
 
 }
 
