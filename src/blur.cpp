@@ -8,7 +8,7 @@ namespace agg
 {
     //=======================================================stack_blur_rgba32
     template<class Img> 
-    void _stack_blur_rgba32(Img& img, unsigned rx, unsigned ry)
+    void _stack_blur_rgba32(Img& img, unsigned rx, unsigned ry, unsigned offset_x, unsigned offset_y)
     {
         typedef typename Img::color_type color_type;
         typedef typename Img::order_type order_type;
@@ -40,11 +40,10 @@ namespace agg
         unsigned sum_out_g;
         unsigned sum_out_b;
         unsigned sum_out_a;
-
         unsigned w   = img.width();
         unsigned h   = img.height();
-        unsigned wm  = w - 1;
-        unsigned hm  = h - 1;
+        unsigned wm  = w - (offset_x*2)- 1;
+        unsigned hm  = h - (offset_y*2) - 1;
 
 
         unsigned div;
@@ -61,7 +60,7 @@ namespace agg
             shr_sum = stack_blur_tables<int>::g_stack_blur8_shr[rx];
             stack.allocate(div);
 
-            for(y = 0; y < h; y++)
+            for(y = offset_y; y < (h-offset_y); y++)
             {
                 sum_r = 
                 sum_g = 
@@ -76,7 +75,7 @@ namespace agg
                 sum_out_b = 
                 sum_out_a = 0;
 
-                src_pix_ptr = img.pix_ptr(0, y);
+                src_pix_ptr = img.pix_ptr(offset_y, y);
                 for(i = 0; i <= rx; i++)
                 {
                     stack_pix_ptr    = &stack[i];
@@ -114,9 +113,9 @@ namespace agg
                 stack_ptr = rx;
                 xp = rx;
                 if(xp > wm) xp = wm;
-                src_pix_ptr = img.pix_ptr(xp, y);
-                dst_pix_ptr = img.pix_ptr(0, y);
-                for(x = 0; x < w; x++)
+                src_pix_ptr = img.pix_ptr(xp+offset_x, y);
+                dst_pix_ptr = img.pix_ptr(offset_x, y);
+                for(x = offset_x; x < (w-offset_x); x++)
                 {
                     dst_pix_ptr[R] = (sum_r * mul_sum) >> shr_sum;
                     dst_pix_ptr[G] = (sum_g * mul_sum) >> shr_sum;
@@ -183,7 +182,7 @@ namespace agg
             stack.allocate(div);
 
             int stride = img.stride();
-            for(x = 0; x < w; x++)
+            for(x = offset_x; x < (w-offset_x); x++)
             {
                 sum_r = 
                 sum_g = 
@@ -198,7 +197,7 @@ namespace agg
                 sum_out_b = 
                 sum_out_a = 0;
 
-                src_pix_ptr = img.pix_ptr(x, 0);
+                src_pix_ptr = img.pix_ptr(x, offset_x);
                 for(i = 0; i <= ry; i++)
                 {
                     stack_pix_ptr    = &stack[i];
@@ -236,9 +235,9 @@ namespace agg
                 stack_ptr = ry;
                 yp = ry;
                 if(yp > hm) yp = hm;
-                src_pix_ptr = img.pix_ptr(x, yp);
-                dst_pix_ptr = img.pix_ptr(x, 0);
-                for(y = 0; y < h; y++)
+                src_pix_ptr = img.pix_ptr(x, yp+offset_y);
+                dst_pix_ptr = img.pix_ptr(x, offset_y);
+                for(y = ry; y < (h-offset_y); y++)
                 {
                     dst_pix_ptr[R] = (sum_r * mul_sum) >> shr_sum;
                     dst_pix_ptr[G] = (sum_g * mul_sum) >> shr_sum;
@@ -303,7 +302,9 @@ namespace agg_blur {
     void blur(agg::rendering_buffer & buf, unsigned rx, unsigned ry)
     {
         agg::pixfmt_rgba32_pre pixf(buf);
-        agg::_stack_blur_rgba32(pixf,rx,ry);
+        unsigned offset_x = rx;
+        unsigned offset_y = ry;
+        agg::_stack_blur_rgba32(pixf,rx,ry,offset_x,offset_y);
         /*
         agg::rendering_buffer buf2;
         agg::pixfmt_rgba32_pre pixf2(buf2);
