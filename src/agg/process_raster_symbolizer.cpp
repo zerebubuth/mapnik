@@ -119,29 +119,64 @@ void agg_renderer<T>::process(raster_symbolizer const& sym,
                 }
                 else
                 {
-                    raster target(target_ext, raster_width, raster_height);
-                    if (scaling_method == SCALING_BILINEAR8)
+                    if (image_ratio_x >= 1 &&
+                        image_ratio_y >= 1 &&
+                        (current_buffer_->data().width() == source->data_.width()) &&
+                        (current_buffer_->data().height() == source->data_.height())
+                        )
                     {
-                        scale_image_bilinear8<image_data_32>(target.data_,
-                                                             source->data_,
-                                                             0.0,
-                                                             0.0);
+                        if (sym.comp_op() == src_over && sym.get_opacity() == 1.0)
+                        {
+                            scale_image_agg<image_data_32>(current_buffer_->data(),
+                                                           source->data_,
+                                                           scaling_method,
+                                                           image_ratio_x,
+                                                           image_ratio_y,
+                                                           start_x,
+                                                           start_y,
+                                                           filter_radius);
+                        }
+                        else
+                        {
+                            image_data_32 target(current_buffer_->data().width(), current_buffer_->data().height());
+                            scale_image_agg<image_data_32>(target,
+                                                           source->data_,
+                                                           scaling_method,
+                                                           image_ratio_x,
+                                                           image_ratio_y,
+                                                           start_x,
+                                                           start_y,
+                                                           filter_radius);
+                            composite(current_buffer_->data(), target,
+                                      sym.comp_op(), sym.get_opacity(),
+                                      0, 0, false);
+                        }
                     }
                     else
                     {
-                        scale_image_agg<image_data_32>(target.data_,
-                                                       source->data_,
-                                                       scaling_method,
-                                                       image_ratio_x,
-                                                       image_ratio_y,
-                                                       0.0,
-                                                       0.0,
-                                                       filter_radius);
+                        raster target(target_ext, raster_width, raster_height);
+                        if (scaling_method == SCALING_BILINEAR8)
+                        {
+                            scale_image_bilinear8<image_data_32>(target.data_,
+                                                                 source->data_,
+                                                                 0.0,
+                                                                 0.0);
+                        }
+                        else
+                        {
+                            scale_image_agg<image_data_32>(target.data_,
+                                                           source->data_,
+                                                           scaling_method,
+                                                           image_ratio_x,
+                                                           image_ratio_y,
+                                                           0.0,
+                                                           0.0,
+                                                           filter_radius);
+                        }
+                        composite(current_buffer_->data(), target.data_,
+                                  sym.comp_op(), sym.get_opacity(),
+                                  start_x, start_y, false);
                     }
-                    composite(current_buffer_->data(), target.data_,
-                              sym.comp_op(), sym.get_opacity(),
-                              start_x, start_y, false);
-
                 }
             }
         }
