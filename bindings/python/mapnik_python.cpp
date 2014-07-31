@@ -66,7 +66,6 @@ void export_datasource();
 void export_datasource_cache();
 void export_symbolizer();
 void export_markers_symbolizer();
-void export_point_symbolizer();
 void export_line_symbolizer();
 void export_line_pattern_symbolizer();
 void export_polygon_symbolizer();
@@ -580,7 +579,6 @@ BOOST_PYTHON_MODULE(_mapnik)
     export_datasource_cache();
     export_symbolizer();
     export_markers_symbolizer();
-    export_point_symbolizer();
     export_line_symbolizer();
     export_line_pattern_symbolizer();
     export_polygon_symbolizer();

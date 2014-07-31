@@ -35,7 +35,6 @@
 using mapnik::rule;
 using mapnik::expr_node;
 using mapnik::expression_ptr;
-using mapnik::point_symbolizer;
 using mapnik::line_symbolizer;
 using mapnik::line_pattern_symbolizer;
 using mapnik::polygon_symbolizer;
@@ -52,7 +51,6 @@ using mapnik::to_expression_string;
 void export_rule()
 {
     using namespace boost::python;
-    implicitly_convertible<point_symbolizer,symbolizer>();
     implicitly_convertible<line_symbolizer,symbolizer>();
     implicitly_convertible<line_pattern_symbolizer,symbolizer>();
     implicitly_convertible<polygon_symbolizer,symbolizer>();

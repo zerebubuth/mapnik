@@ -180,9 +180,7 @@ struct symbolizer_grammar : qi::grammar<Iterator, space_type, symbolizer()>
 
         sym = lit('{')
             >> lit("\"type\"") >> lit(':')
-            >> (lit("\"PointSymbolizer\"")[_val = construct<point_symbolizer>()]
-                |
-                lit("\"LineSymbolizer\"")[_val = construct<line_symbolizer>()]
+            >> (lit("\"LineSymbolizer\"")[_val = construct<line_symbolizer>()]
                 |
                 lit("\"PolygonSymbolizer\"")[_val = construct<polygon_symbolizer>()]
                 )

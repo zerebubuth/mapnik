@@ -61,7 +61,6 @@
 
 // mapnik symbolizer generics
 #include <mapnik/renderer_common/process_building_symbolizer.hpp>
-#include <mapnik/renderer_common/process_point_symbolizer.hpp>
 #include <mapnik/renderer_common/process_raster_symbolizer.hpp>
 #include <mapnik/renderer_common/process_markers_symbolizer.hpp>
 #include <mapnik/renderer_common/process_polygon_symbolizer.hpp>
@@ -547,23 +546,6 @@ void cairo_renderer_base::render_marker(pixel_position const& pos,
         marker_tr *= agg::trans_affine_translation(pos.x,pos.y);
         context_.add_image(marker_tr, **marker.get_bitmap_data(), opacity);
     }
-}
-
-void cairo_renderer_base::process(point_symbolizer const& sym,
-                                  mapnik::feature_impl & feature,
-                                  proj_transform const& prj_trans)
-{
-    composite_mode_e comp_op = get<composite_mode_e>(sym, keys::comp_op, feature, common_.vars_, src_over);
-
-    cairo_save_restore guard(context_);
-    context_.set_operator(comp_op);
-
-    render_point_symbolizer(
-        sym, feature, prj_trans, common_,
-        [this](pixel_position const& pos, marker const& marker,
-            agg::trans_affine const& tr, double opacity) {
-            render_marker(pos, marker, tr, opacity);
-        });
 }
 
 void cairo_renderer_base::process(shield_symbolizer const& sym,

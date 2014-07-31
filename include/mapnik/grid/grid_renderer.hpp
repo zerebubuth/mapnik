@@ -79,10 +79,6 @@ public:
     void render_marker(mapnik::feature_impl const& feature, unsigned int step,
                        pixel_position const& pos, marker const& marker,
                        agg::trans_affine const& tr, double opacity, composite_mode_e comp_op);
-
-    void process(point_symbolizer const& sym,
-                 mapnik::feature_impl & feature,
-                 proj_transform const& prj_trans);
     void process(line_symbolizer const& sym,
                  mapnik::feature_impl & feature,
                  proj_transform const& prj_trans);

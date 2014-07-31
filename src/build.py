@@ -286,7 +286,6 @@ source += Split(
     agg/process_line_symbolizer.cpp
     agg/process_line_pattern_symbolizer.cpp
     agg/process_text_symbolizer.cpp
-    agg/process_point_symbolizer.cpp
     agg/process_polygon_symbolizer.cpp
     agg/process_polygon_pattern_symbolizer.cpp
     agg/process_raster_symbolizer.cpp
@@ -316,7 +315,6 @@ if env['GRID_RENDERER']:
         grid/process_line_pattern_symbolizer.cpp
         grid/process_line_symbolizer.cpp
         grid/process_markers_symbolizer.cpp
-        grid/process_point_symbolizer.cpp
         grid/process_polygon_pattern_symbolizer.cpp
         grid/process_polygon_symbolizer.cpp
         grid/process_raster_symbolizer.cpp
@@ -339,7 +337,6 @@ if env['SVG_RENDERER']: # svg backend
     svg/output/process_line_pattern_symbolizer.cpp
     svg/output/process_line_symbolizer.cpp
     svg/output/process_markers_symbolizer.cpp
-    svg/output/process_point_symbolizer.cpp
     svg/output/process_polygon_pattern_symbolizer.cpp
     svg/output/process_polygon_symbolizer.cpp
     svg/output/process_raster_symbolizer.cpp

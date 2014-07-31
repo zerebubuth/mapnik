@@ -38,7 +38,6 @@
 #include <mapnik/label_collision_detector.hpp>
 
 #include <mapnik/geom_util.hpp>
-#include <mapnik/renderer_common/process_point_symbolizer.hpp>
 #include <mapnik/renderer_common/process_group_symbolizer.hpp>
 
 // agg

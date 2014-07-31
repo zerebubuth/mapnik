@@ -49,12 +49,6 @@ struct symbolizer_traits
 };
 
 template<>
-struct symbolizer_traits<point_symbolizer>
-{
-    static char const* name() { return "PointSymbolizer";}
-};
-
-template<>
 struct symbolizer_traits<line_symbolizer>
 {
     static char const* name() { return "LineSymbolizer";}

@@ -54,7 +54,6 @@
 #include <sstream>
 
 using mapnik::symbolizer;
-using mapnik::point_symbolizer;
 using mapnik::line_symbolizer;
 using mapnik::line_pattern_symbolizer;
 using mapnik::polygon_symbolizer;
@@ -255,21 +254,6 @@ void export_raster_symbolizer()
 
     class_<raster_symbolizer, bases<symbolizer_base> >("RasterSymbolizer",
                               init<>("Default ctor"))
-        ;
-}
-
-void export_point_symbolizer()
-{
-    using namespace boost::python;
-
-    mapnik::enumeration_<mapnik::point_placement_e>("point_placement")
-        .value("CENTROID",mapnik::CENTROID_POINT_PLACEMENT)
-        .value("INTERIOR",mapnik::INTERIOR_POINT_PLACEMENT)
-        ;
-
-    class_<point_symbolizer, bases<symbolizer_base> >("PointSymbolizer",
-                             init<>("Default Point Symbolizer - 4x4 black square"))
-        .def("__hash__",hash_impl_2<point_symbolizer>)
         ;
 }
 

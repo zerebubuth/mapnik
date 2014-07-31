@@ -197,27 +197,6 @@
 #     check_transform("scale([sx], [sy]/2)")
 #     # TODO check expected failures
 
-# def test_point_symbolizer():
-#     p = mapnik.PointSymbolizer()
-#     eq_(p.filename,'')
-#     eq_(p.transform,'')
-#     eq_(p.opacity,1.0)
-#     eq_(p.allow_overlap,False)
-#     eq_(p.ignore_placement,False)
-#     eq_(p.comp_op,mapnik.CompositeOp.src_over)
-#     eq_(p.placement, mapnik.point_placement.CENTROID)
-
-#     p = mapnik.PointSymbolizer(mapnik.PathExpression("../data/images/dummy.png"))
-#     p.allow_overlap = True
-#     p.opacity = 0.5
-#     p.ignore_placement = True
-#     p.placement = mapnik.point_placement.INTERIOR
-#     eq_(p.allow_overlap, True)
-#     eq_(p.opacity, 0.5)
-#     eq_(p.filename,'../data/images/dummy.png')
-#     eq_(p.ignore_placement,True)
-#     eq_(p.placement, mapnik.point_placement.INTERIOR)
-
 # def test_markers_symbolizer():
 #     p = mapnik.MarkersSymbolizer()
 #     eq_(p.allow_overlap, False)
@@ -270,14 +249,6 @@
 #     p.marker_type = 'arrow'
 #     eq_(p.marker_type,'shape://arrow')
 #     eq_(p.filename,'shape://arrow')
-
-
-# # PointSymbolizer missing image file
-# # images paths are now PathExpressions are evaluated at runtime
-# # so it does not make sense to throw...
-# #@raises(RuntimeError)
-# #def test_pointsymbolizer_missing_image():
-#  #   p = mapnik.PointSymbolizer(mapnik.PathExpression("../data/images/broken.png"))
 
 # def test_polygon_symbolizer():
 #     p = mapnik.PolygonSymbolizer()

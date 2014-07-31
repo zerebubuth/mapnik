@@ -122,11 +122,6 @@ private:
 
 struct symbolizer_info : public boost::static_visitor<QString>
 {
-    QString operator() (mapnik::point_symbolizer const& sym) const
-    {
-        boost::ignore_unused_variable_warning(sym);
-        return QString("PointSymbolizer");
-    }
 
     QString operator() (mapnik::line_symbolizer const& sym) const
     {
@@ -195,21 +190,6 @@ struct symbolizer_icon : public boost::static_visitor<QIcon>
         return QIcon(pix);
     }
 
-    QIcon operator() (mapnik::point_symbolizer const& sym) const
-    {
-        // FIXME!
-        /*
-          std::shared_ptr<mapnik::image_data_32> symbol = sym.get_image();
-          if (symbol)
-          {
-          QImage image(symbol->getBytes(),
-          symbol->width(),symbol->height(),QImage::Format_ARGB32);
-          QPixmap pix = QPixmap::fromImage(image.rgbSwapped());
-          return QIcon(pix);
-          }
-        */
-        return QIcon();
-    }
     QIcon operator() (mapnik::line_symbolizer const& sym) const
     {
         QPixmap pix(48,16);

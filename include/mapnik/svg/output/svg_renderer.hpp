@@ -86,9 +86,6 @@ public:
     /*!
      * @brief Overloads that process each kind of symbolizer individually.
      */
-    void process(point_symbolizer const& sym,
-                 mapnik::feature_impl & feature,
-                 proj_transform const& prj_trans);
     void process(line_symbolizer const& sym,
                  mapnik::feature_impl & feature,
                  proj_transform const& prj_trans);

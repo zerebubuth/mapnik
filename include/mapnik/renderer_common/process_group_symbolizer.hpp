@@ -36,7 +36,6 @@
 #include <mapnik/group/group_rule.hpp>
 #include <mapnik/group/group_symbolizer_helper.hpp>
 #include <mapnik/group/group_symbolizer_properties.hpp>
-#include <mapnik/renderer_common/process_point_symbolizer.hpp>
 #include <mapnik/text/placements_list.hpp>
 #include <mapnik/util/conversions.hpp>
 
@@ -118,7 +117,7 @@ struct render_thunk_extractor : public boost::static_visitor<>
                            renderer_common & common,
                            box2d<double> const& clipping_extent);
 
-    void operator()(point_symbolizer const& sym) const;
+    void operator()(markers_symbolizer const& sym) const;
 
     void operator()(text_symbolizer const& sym) const;
 

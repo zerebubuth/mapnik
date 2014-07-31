@@ -102,7 +102,6 @@ private:
     bool parse_font(font_set & fset, xml_node const& f);
     void parse_rule(feature_type_style & style, xml_node const & node);
     void parse_symbolizers(rule & rule, xml_node const & node);
-    void parse_point_symbolizer(rule & rule, xml_node const& node);
     void parse_line_pattern_symbolizer(rule & rule, xml_node const& node);
     void parse_polygon_pattern_symbolizer(rule & rule, xml_node const& node);
     void parse_text_symbolizer(rule & rule, xml_node const& node);
@@ -111,7 +110,7 @@ private:
     void parse_polygon_symbolizer(rule & rule, xml_node const& node);
     void parse_building_symbolizer(rule & rule, xml_node const& node);
     void parse_raster_symbolizer(rule & rule, xml_node const& node);
-    void parse_markers_symbolizer(rule & rule, xml_node const& node);
+    void parse_markers_symbolizer(rule & rule, xml_node const& node, bool point_style);
     void parse_group_symbolizer(rule &rule, xml_node const& node);
     void parse_debug_symbolizer(rule & rule, xml_node const& node);
     void parse_group_rule(group_symbolizer_properties &prop, xml_node const& node);
@@ -781,7 +780,7 @@ void map_parser::parse_symbolizers(rule & rule, xml_node const & node)
         switch (name2int(sym_node.name().c_str()))
         {
         case name2int("PointSymbolizer"):
-            parse_point_symbolizer(rule, sym_node);
+            parse_markers_symbolizer(rule, sym_node, true);
             sym_node.set_processed(true);
             break;
         case name2int("LinePatternSymbolizer"):
@@ -817,7 +816,7 @@ void map_parser::parse_symbolizers(rule & rule, xml_node const & node)
             sym_node.set_processed(true);
             break;
         case name2int("MarkersSymbolizer"):
-            parse_markers_symbolizer(rule, sym_node);
+            parse_markers_symbolizer(rule, sym_node, false);
             sym_node.set_processed(true);
             break;
         case name2int("GroupSymbolizer"):
@@ -850,52 +849,7 @@ void map_parser::parse_symbolizer_base(symbolizer_base &sym, xml_node const& nod
     set_symbolizer_property<symbolizer_base,double>(sym, keys::smooth, node);
 }
 
-void map_parser::parse_point_symbolizer(rule & rule, xml_node const & node)
-{
-    try
-    {
-        optional<std::string> file = node.get_opt_attr<std::string>("file");
-        optional<std::string> base = node.get_opt_attr<std::string>("base");
-        optional<std::string> image_transform_wkt = node.get_opt_attr<std::string>("transform");
-
-        point_symbolizer sym;
-        parse_symbolizer_base(sym, node);
-        // allow-overlap
-        set_symbolizer_property<point_symbolizer,boolean_type>(sym, keys::allow_overlap, node);
-        // opacity
-        set_symbolizer_property<point_symbolizer,double>(sym, keys::opacity, node);
-        // ignore-placement
-        set_symbolizer_property<point_symbolizer,boolean_type>(sym, keys::ignore_placement, node);
-        // point placement
-        set_symbolizer_property<symbolizer_base,point_placement_enum>(sym, keys::point_placement_type, node);
-        if (file && !file->empty())
-        {
-            if(base)
-            {
-                std::map<std::string,std::string>::const_iterator itr = file_sources_.find(*base);
-                if (itr!=file_sources_.end())
-                {
-                    *file = itr->second + "/" + *file;
-                }
-            }
-
-            *file = ensure_relative_to_xml(file);
-            std::string filename = *file;
-            ensure_exists(filename);
-            put(sym, keys::file, parse_path(filename));
-            set_symbolizer_property<symbolizer_base, transform_type>(sym, keys::image_transform, node);
-        }
-
-        rule.append(std::move(sym));
-    }
-    catch (config_error const& ex)
-    {
-        ex.append_context(node);
-        throw;
-    }
-}
-
-void map_parser::parse_markers_symbolizer(rule & rule, xml_node const& node)
+void map_parser::parse_markers_symbolizer(rule & rule, xml_node const& node, bool point_style)
 {
     try
     {
@@ -915,6 +869,12 @@ void map_parser::parse_markers_symbolizer(rule & rule, xml_node const& node)
             }
 
             filename = ensure_relative_to_xml(file);
+        }
+        else if (point_style)
+        {
+            // back compatibility to trigger a markers symbolizer to behave like
+            // the earlier point symbolizer
+            filename = marker_cache::instance().known_image_prefix_ + "square";
         }
 
         optional<std::string> marker_type = node.get_opt_attr<std::string>("marker-type");

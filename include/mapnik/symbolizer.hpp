@@ -128,7 +128,6 @@ enum class property_types : std::uint8_t
     target_line_join,
     target_line_rasterizer,
     target_halo_rasterizer,
-    target_point_placement,
     target_pattern_alignment,
     target_debug_symbolizer_mode,
     target_marker_placement,
@@ -234,7 +233,6 @@ template <> struct enum_traits<e> { \
 
 ENUM_FROM_STRING( line_join_enum )
 ENUM_FROM_STRING( line_cap_enum )
-ENUM_FROM_STRING( point_placement_enum )
 ENUM_FROM_STRING( marker_placement_enum )
 ENUM_FROM_STRING( gamma_method_enum )
 ENUM_FROM_STRING( line_rasterizer_enum )
@@ -522,7 +520,6 @@ property_meta_type const& get_meta(mapnik::keys key);
 mapnik::keys get_key(std::string const& name);
 
 // concrete symbolizer types
-struct MAPNIK_DECL point_symbolizer : public symbolizer_base {};
 struct MAPNIK_DECL line_symbolizer : public symbolizer_base {};
 struct MAPNIK_DECL polygon_symbolizer : public symbolizer_base {};
 struct MAPNIK_DECL text_symbolizer : public symbolizer_base {};
@@ -536,8 +533,7 @@ struct MAPNIK_DECL group_symbolizer : public symbolizer_base {};
 struct MAPNIK_DECL debug_symbolizer : public symbolizer_base {};
 
 // symbolizer
-using symbolizer = boost::variant<point_symbolizer,
-                                  line_symbolizer,
+using symbolizer = boost::variant<line_symbolizer,
                                   line_pattern_symbolizer,
                                   polygon_symbolizer,
                                   polygon_pattern_symbolizer,
