@@ -115,8 +115,19 @@ void text_symbolizer_properties::text_properties_from_xml(xml_node const& node)
     set_property_from_xml<label_placement_e>(expressions.label_placement, "placement", node);
     set_property_from_xml<value_double>(expressions.label_spacing, "spacing", node);
     set_property_from_xml<value_double>(expressions.label_position_tolerance, "label-position-tolerance", node);
-    set_property_from_xml<value_double>(expressions.repeat_distance, "repeat-distance", node);
-    set_property_from_xml<value_double>(expressions.minimum_distance, "minimum-distance", node);
+    // if setting new "repeat-distance" option then go ahead normally
+    if (node.has_attribute("repeat-distance"))
+    {
+        set_property_from_xml<value_double>(expressions.repeat_distance, "repeat-distance", node);
+        set_property_from_xml<value_double>(expressions.minimum_distance, "minimum-distance", node);
+    }
+    // However if only "minimum-distance" is set then keep back-compatibility
+    // for line placement with previous Mapnik 2.3.x behavior by treating as repeat-distance
+    // NOTE: this makes no attempt at back compatibility for point placement
+    else if (node.has_attribute("minimum-distance"))
+    {
+        set_property_from_xml<value_double>(expressions.repeat_distance, "minimum-distance", node);
+    }
     set_property_from_xml<value_double>(expressions.minimum_padding, "minimum-padding", node);
     set_property_from_xml<value_double>(expressions.minimum_path_length, "minimum-path-length", node);
     set_property_from_xml<boolean_type>(expressions.avoid_edges, "avoid-edges", node);
