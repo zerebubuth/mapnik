@@ -55,6 +55,19 @@ def compare(actual, expected, alpha=True):
                 diff += 1
     return diff
 
+def compare_svg(actual, expected, threshold=0, alpha=True):
+    global errors
+    global passed
+    svg1 = open(actual,'r').read()
+    try:
+        svg2 = open(expected,'r').read()
+    except RuntimeError:
+        return 9999990
+    equal = (svg1 == svg2)
+    if not equal:
+        return 99999999
+    return 0
+
 def compare_grids(actual, expected, threshold=0, alpha=True):
     global errors
     global passed

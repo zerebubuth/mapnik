@@ -21,6 +21,7 @@ defaults = {
     'scales':[1.0,2.0],
     'agg': True,
     'cairo': mapnik.has_cairo(),
+    'svg': mapnik.has_svg_renderer(),
     'grid': mapnik.has_grid_renderer()
 }
 
@@ -40,6 +41,9 @@ def render_cairo(m, output, scale_factor):
     new_im = mapnik.Image.open(output)
     new_im.save(output, 'png8:m=h')
 
+def render_svg(m, output, scale_factor):
+    mapnik.render_to_file(m, output, 'svg-ng', scale_factor)
+
 def render_grid(m, output, scale_factor):
     grid = mapnik.Grid(m.width, m.height)
     mapnik.render_layer(m, grid, layer=0)
@@ -52,6 +56,13 @@ renderers = [
       'compare': lambda actual, reference: compare(actual, reference, alpha=True),
       'threshold': agg_threshold,
       'filetype': 'png',
+      'dir': 'images'
+    },
+    { 'name': 'svg',
+      'render': render_svg,
+      'compare': lambda actual, reference: compare_svg(actual, reference, alpha=False),
+      'threshold': 0,
+      'filetype': 'svg',
       'dir': 'images'
     },
     { 'name': 'cairo',
