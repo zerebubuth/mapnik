@@ -35,6 +35,7 @@
 #include <tuple>
 #include <cstring>  // required for memcpy with linux/g++
 #include <cstdint>
+#include <vector>
 
 namespace mapnik
 {
@@ -43,108 +44,61 @@ template <typename T>
 class vertex_vector : private mapnik::noncopyable
 {
     using coord_type = T;
-    enum block_e {
-        block_shift = 8,
-        block_size  = 1<<block_shift,
-        block_mask  = block_size - 1,
-        grow_by     = 256
-    };
 public:
     // required for iterators support
     using value_type = std::tuple<unsigned,coord_type,coord_type>;
     using size_type = std::size_t;
     using command_size = std::uint8_t;
+    using cont_type = std::vector<value_type>;
 private:
-    unsigned num_blocks_;
-    unsigned max_blocks_;
-    coord_type** vertices_;
-    command_size** commands_;
-    size_type pos_;
+    cont_type vertices_;
 
 public:
 
     vertex_vector()
-        : num_blocks_(0),
-          max_blocks_(0),
-          vertices_(0),
-          commands_(0),
-          pos_(0) {}
+        : vertices_(0) {}
 
-    ~vertex_vector()
+    ~vertex_vector() {}
+
+    inline void reserve(std::size_t size)
     {
-        if ( num_blocks_ )
-        {
-            coord_type** vertices=vertices_ + num_blocks_ - 1;
-            while ( num_blocks_-- )
-            {
-                ::operator delete(*vertices);
-                --vertices;
-            }
-            ::operator delete(vertices_);
-        }
-    }
-    size_type size() const
-    {
-        return pos_;
+        vertices_.reserve(size);
     }
 
-    void push_back (coord_type x,coord_type y,command_size command)
+    inline void resize(std::size_t size)
     {
-        size_type block = pos_ >> block_shift;
-        if (block >= num_blocks_)
-        {
-            allocate_block(block);
-        }
-        coord_type* vertex = vertices_[block] + ((pos_ & block_mask) << 1);
-        command_size* cmd= commands_[block] + (pos_ & block_mask);
-
-        *cmd = static_cast<command_size>(command);
-        *vertex++ = x;
-        *vertex   = y;
-        ++pos_;
-    }
-    unsigned get_vertex(unsigned pos,coord_type* x,coord_type* y) const
-    {
-        if (pos >= pos_) return SEG_END;
-        size_type block = pos >> block_shift;
-        const coord_type* vertex = vertices_[block] + (( pos & block_mask) << 1);
-        *x = (*vertex++);
-        *y = (*vertex);
-        return commands_[block] [pos & block_mask];
+        vertices_.resize(size);
     }
 
-    void set_command(unsigned pos, unsigned command)
+    inline void shrink_to_fit()
     {
-        if (pos < pos_)
-        {
-            size_type block = pos >> block_shift;
-            commands_[block] [pos & block_mask] = command;
-        }
+        vertices_.shrink_to_fit();
     }
-private:
-    void allocate_block(size_type block)
-    {
-        if (block >= max_blocks_)
-        {
-            coord_type** new_vertices =
-                static_cast<coord_type**>(::operator new (sizeof(coord_type*)*((max_blocks_ + grow_by) * 2)));
-            command_size** new_commands = (command_size**)(new_vertices + max_blocks_ + grow_by);
-            if (vertices_)
-            {
-                std::memcpy(new_vertices,vertices_,max_blocks_ * sizeof(coord_type*));
-                std::memcpy(new_commands,commands_,max_blocks_ * sizeof(command_size*));
-                ::operator delete(vertices_);
-            }
-            vertices_ = new_vertices;
-            commands_ = new_commands;
-            max_blocks_ += grow_by;
-        }
-        vertices_[block] = static_cast<coord_type*>
-            (::operator new(sizeof(coord_type)*(block_size * 2 + block_size / (sizeof(coord_type)))));
 
-        commands_[block] = (command_size*)(vertices_[block] + block_size*2);
-        ++num_blocks_;
+    inline size_type capacity() const
+    {
+        return vertices_.capacity();
     }
+
+    inline size_type size() const
+    {
+        return vertices_.size();
+    }
+
+    inline void push_back(coord_type x, coord_type y, command_size command)
+    {
+        vertices_.emplace_back(command,x,y);
+    }
+
+    inline unsigned get_vertex(unsigned pos, coord_type* x, coord_type* y) const
+    {
+        if (pos >= size()) return SEG_END;
+        value_type const& v = vertices_[pos];
+        *x = std::get<1>(v);
+        *y = std::get<2>(v);
+        return std::get<0>(v);
+    }
+
 };
 
 }
